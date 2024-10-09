@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map_visor" style="width: 100%; height: 90vh"></div>
+
+<script src="async_map_visor.js"></script>
+<script>
+    const mapVisor = document.getElementById("map_visor")
+    const stage = new Stage(mapVisor, false)
+    stage.addListenerOnClick(data => alert("items clicked " + data.length))
+
+    stage.addAsync(new Actor({ isPrimary: true, category: "map" }, "assets/mapa.png", 0, 0, null, null))
+    stage.addAsync(new Actor({ isPrimary: false, category: "pin" }, "assets/pin.png", 100, 100, 40, 40))
+    stage.addAsync(new Actor({ isPrimary: false, category: "pin" }, "assets/pin.png", 100, 100, 40, 40, {
+        positionCenter: true,
+        blockSize: true
+    }))
+    setTimeout(() => {
+        stage.addAsync(new Actor({ isPrimary: false, category: "pin" }, "assets/pin.png", 500, 500, 40, 40))
+    }, 4000)
+</script>
+</body>
+</html>
