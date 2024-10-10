@@ -37,6 +37,7 @@ class Actor {
     constructor(data = { category: "", isPrimary: false }, src, x = 0, y = 0, w = null, h = null, props = { blockSize: false, positionCenter: false }) {
         this.#data = data
         this.#image = new Image()
+        this.#image.crossOrigin = "Anonymous"
         this.#image.src = src
         this.#props = props
 
