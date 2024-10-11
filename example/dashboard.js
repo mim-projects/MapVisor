@@ -7,7 +7,7 @@ const map = new Actor({ isPrimary: true, category: "map" }, "../assets/mapa2.png
 stage.addAsync(map)
 
 // El pin se redimensiona con el zoom del viewport | se pinta desde la esquina superior izq en lugar del centro
-stage.addAsync(new Actor({ isPrimary: false, category: "pin" }, "../assets/pin.png", 100, 100, 100, 100))
+stage.addAsync(new Actor({ isPrimary: false, category: "pin", crossOrigin: null }, "../assets/pin.png", 100, 100, 100, 100))
 
 setInterval(() => {
     stage.addAsync(new Actor({ isPrimary: false, category: "pin" }, "../assets/pin.png",

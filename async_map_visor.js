@@ -34,10 +34,10 @@ class Actor {
     #props
     #loaded = false
 
-    constructor(data = { category: "", isPrimary: false }, src, x = 0, y = 0, w = null, h = null, props = { blockSize: false, positionCenter: false }) {
+    constructor(data = { category: "", isPrimary: false, crossOrigin: null }, src, x = 0, y = 0, w = null, h = null, props = { blockSize: false, positionCenter: false }) {
         this.#data = data
         this.#image = new Image()
-        this.#image.crossOrigin = "Anonymous"
+        this.#image.crossOrigin = data.crossOrigin
         this.#image.src = src
         this.#props = props
 
@@ -188,20 +188,19 @@ class Stage {
         if (actor == null) return
 
         // scale
-        if (actor.dimension.x > actor.dimension.y) {
-            if (actor.dimension.x > this.#context.canvas.width) {
-                this.#viewport.scale = this.#context.canvas.width / actor.dimension.x
-            } else {
-                this.#viewport.scale = actor.dimension.x / this.#context.canvas.width
-            }
-        } else {
-            if (actor.dimension.y > this.#context.canvas.height) {
-                this.#viewport.scale = this.#context.canvas.height / actor.dimension.y
-            } else {
-                this.#viewport.scale = actor.dimension.y / this.#context.canvas.height
-            }
+        if (actor.dimension.x > this.#context.canvas.width && actor.dimension.y > this.#context.canvas.height) {
+            const r1 = this.#context.canvas.width / actor.dimension.x
+            const r2 = this.#context.canvas.height / actor.dimension.y
+            this.#viewport.scale = r1 > r2 ? r2 : r1
+        } else if (actor.dimension.x < this.#context.canvas.width && actor.dimension.y < this.#context.canvas.height) {
+            const r1 = this.#context.canvas.width / actor.dimension.x
+            const r2 = this.#context.canvas.height / actor.dimension.y
+            this.#viewport.scale = r1 < r2 ? r2 : r1
+        } else if (actor.dimension.x > this.#context.canvas.width) {
+            this.#viewport.scale = this.#context.canvas.width / actor.dimension.x
+        } else if (actor.dimension.y > this.#context.canvas.height) {
+            this.#viewport.scale = this.#context.canvas.height / actor.dimension.y
         }
-        this.#viewport.scale *= 0.9
 
         // position
         const viewportCenter = {
