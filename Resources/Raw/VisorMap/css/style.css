@@ -1,0 +1,192 @@
+.dashboard-sidebar-content {
+    min-height: 100%;
+    background: #{cc.attrs.primaryColor500};
+}
+
+.dashboard-sidebar-content-box {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.dashboard-sidebar-content-box * {
+    color: #{cc.attrs.textColor};
+}
+
+.section-menu-group {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+}
+
+.title-menu {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 !important;
+    padding: 0 !important;
+    letter-spacing: 1px;
+    font-size: 1rem;
+}
+
+.section-menu-group button {
+    cursor: pointer;
+    text-align: left !important;
+}
+
+.option-key-value,
+.section-menu-group button {
+    font-size: 1rem;
+}
+
+.option-key-value {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+}
+
+.option-key,
+.option-value {
+    display: flex;
+    align-items: center;
+}
+
+.option-value {
+    justify-content: center;
+    width: 3rem;
+    border-radius: 5px;
+    height: 2rem;
+    font-weight: 600;
+    background: #{cc.attrs.primaryColor400};
+}
+
+.button-icon-left {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    background: transparent;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    gap: 1rem;
+    transition: 200ms;
+}
+
+.button-icon-right {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    background: transparent;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    gap: 1rem;
+    transition: 200ms;
+}
+
+.button-icon-right svg,
+.button-icon-left svg {
+    fill: #{cc.attrs.textColor} !important;
+}
+
+.button-icon-right:hover,
+.button-icon-left:hover {
+    transition: 200ms;
+    background: #{cc.attrs.primaryColor400};                                         
+}
+
+.modal-block {
+    position: fixed;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+}
+
+.custom-modal {
+    margin: 1rem auto auto auto;
+    width: calc(100% - 4rem);
+    max-width: 40rem;
+    max-height: calc(100% - 4rem);
+    padding: 1rem;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: #{cc.attrs.background};
+}
+
+.custom-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-modal-header h1 {
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.custom-modal-header span {
+    cursor: pointer;
+}
+
+.custom-modal-body {
+    overflow: auto;
+}
+
+.custom-modal-body img {
+    width: 100%;
+    height: 3rem;
+    object-fit: contain;
+    padding: 0.5rem;
+}
+
+.custom-modal-body table {
+    margin-top: 1rem;
+    width: calc(100% - 1rem);
+    min-width: 30rem;
+}
+
+.input-checkbox {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.input-date-parent {
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.input-date-parent-activator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.input-date {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    color: #{cc.attrs.textColorInput} !important;
+}
+
+.select-many {
+    background: #{cc.attrs.background} !important;
+}
+
+.select-many span {
+    font-size: 0.8rem !important;
+    color: #{cc.attrs.textColorInput} !important;
+}
+
+.select-many svg {
+    fill: #{cc.attrs.textColorInput} !important;
+}
