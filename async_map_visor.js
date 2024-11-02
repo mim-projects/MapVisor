@@ -222,28 +222,37 @@ class Stage {
     #events(htmlElement) {
         this.#context.canvas.style.cursor = "grab"
         this.#context.canvas.style.userSelect = "none"
-        this.#context.canvas.addEventListener("mousedown", (e) => {
-            this.#eventsHelper.onMousePress = true
-            if (this.#context.canvas.style.cursor !== "pointer") {
-                const x = e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x
-                const y = e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
-                this.#context.canvas.style.cursor = "grabbing"
-                this.#viewport.onClickPointer.x = x
-                this.#viewport.onClickPointer.y = y
-            }
-        })
-        this.#context.canvas.addEventListener("mouseup", (e) => {
-            this.#eventsHelper.onMousePress = false
-            if (this.#context.canvas.style.cursor !== "pointer") {
-                this.#context.canvas.style.cursor = "grab"
-                this.#viewport.positionHelper.x = this.#viewport.position.x
-                this.#viewport.positionHelper.y = this.#viewport.position.y
-            } else {
-                const x = e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x
-                const y = e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
-                this.#onClickCallback(this.#actors.filter(actor => actor.contentPointer(x, y, this.#dev.debugBoxWidth, this.#viewport)))
-            }
-        })
+
+        // Disabled Events
+        this.#context.canvas.addEventListener("contextmenu", e => e.preventDefault())
+
+        // Touch Events
+        this.#context.canvas.addEventListener("touchstart", (e) => this.#eventStartHelper(
+            e.changedTouches[0].pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.changedTouches[0].pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
+        this.#context.canvas.addEventListener("touchmove", (e) => this.#eventMoveHelper(
+            e.changedTouches[0].pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.changedTouches[0].pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
+        this.#context.canvas.addEventListener("touchend", (e) => this.#eventEndHelper(
+            e.changedTouches[0].pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.changedTouches[0].pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
+
+        // Mouse Events
+        this.#context.canvas.addEventListener("mouseup", (e) => this.#eventEndHelper(
+            e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
+        this.#context.canvas.addEventListener("mousemove", (e) => this.#eventMoveHelper(
+            e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
+        this.#context.canvas.addEventListener("mousedown", (e) => this.#eventStartHelper(
+            e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x,
+            e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
+        ))
         this.#context.canvas.addEventListener("mouseout", (e) => {
             if (this.#context.canvas.style.cursor !== "pointer") {
                 this.#context.canvas.style.cursor = "grab"
@@ -251,37 +260,8 @@ class Stage {
                 this.#viewport.positionHelper.y = this.#viewport.position.y
             }
         })
-        this.#context.canvas.addEventListener("mousemove", (e) => {
-            const x = e.pageX - e.currentTarget.offsetLeft - this.#context.canvas.getBoundingClientRect().x
-            const y = e.pageY - e.currentTarget.offsetTop - this.#context.canvas.getBoundingClientRect().y
-            if (this.#context.canvas.style.cursor !== "grabbing") {
-                if (this.#eventsHelper.onMousePress) {
-                    this.#context.canvas.style.cursor = "grabbing"
-                    this.#viewport.onClickPointer.x = x
-                    this.#viewport.onClickPointer.y = y
-                } else if (this.#actors.filter(actor => actor.contentPointer(x, y, this.#dev.debugBoxWidth, this.#viewport)).length > 0) {
-                    this.#context.canvas.style.cursor = "pointer"
-                } else {
-                    this.#context.canvas.style.cursor = "grab"
-                }
-            }
-            if (this.#context.canvas.style.cursor === "grabbing") {
-                const posX = this.#viewport.positionHelper.x + (x - this.#viewport.onClickPointer.x)
-                const posY = this.#viewport.positionHelper.y + (y - this.#viewport.onClickPointer.y)
-                this.#viewport.position.x = posX
-                this.#viewport.position.y = posY
-            }
-            this.render()
-            if (this.#dev.debug) {
-                this.#context.fillRect(x - this.#dev.debugBoxWidth, y - this.#dev.debugBoxWidth, this.#dev.debugBoxWidth * 2, this.#dev.debugBoxWidth * 2)
-            }
-        })
         this.#context.canvas.addEventListener("wheel", (e) => {
-            if (e.wheelDeltaY > 0) {
-                this.#viewport.scale *= 1.1
-            } else {
-                this.#viewport.scale *= 0.9
-            }
+            this.#viewport.scale *= e.wheelDeltaY > 0 ? 1.1 : 0.9;
             this.render()
         })
 
@@ -350,5 +330,49 @@ class Stage {
         containerControls.append(zoomIn)
         containerControls.append(zoomOut)
         containerControls.append(reset)
+    }
+
+    #eventStartHelper(x, y) {
+        this.#eventsHelper.onMousePress = true
+        if (this.#context.canvas.style.cursor !== "pointer") {
+            this.#context.canvas.style.cursor = "grabbing"
+            this.#viewport.onClickPointer.x = x
+            this.#viewport.onClickPointer.y = y
+        }
+    }
+
+    #eventEndHelper(x, y) {
+        this.#eventsHelper.onMousePress = false
+        if (this.#context.canvas.style.cursor !== "pointer") {
+            this.#context.canvas.style.cursor = "grab"
+            this.#viewport.positionHelper.x = this.#viewport.position.x
+            this.#viewport.positionHelper.y = this.#viewport.position.y
+        } else {
+            this.#onClickCallback(this.#actors.filter(actor => actor.contentPointer(x, y, this.#dev.debugBoxWidth, this.#viewport)))
+        }
+    }
+
+    #eventMoveHelper(x, y) {
+        if (this.#context.canvas.style.cursor !== "grabbing") {
+            if (this.#eventsHelper.onMousePress) {
+                this.#context.canvas.style.cursor = "grabbing"
+                this.#viewport.onClickPointer.x = x
+                this.#viewport.onClickPointer.y = y
+            } else if (this.#actors.filter(actor => actor.contentPointer(x, y, this.#dev.debugBoxWidth, this.#viewport)).length > 0) {
+                this.#context.canvas.style.cursor = "pointer"
+            } else {
+                this.#context.canvas.style.cursor = "grab"
+            }
+        }
+        if (this.#context.canvas.style.cursor === "grabbing") {
+            const posX = this.#viewport.positionHelper.x + (x - this.#viewport.onClickPointer.x)
+            const posY = this.#viewport.positionHelper.y + (y - this.#viewport.onClickPointer.y)
+            this.#viewport.position.x = posX
+            this.#viewport.position.y = posY
+        }
+        this.render()
+        if (this.#dev.debug) {
+            this.#context.fillRect(x - this.#dev.debugBoxWidth, y - this.#dev.debugBoxWidth, this.#dev.debugBoxWidth * 2, this.#dev.debugBoxWidth * 2)
+        }
     }
 }
